@@ -4,7 +4,7 @@ import styles from '../../styles/Products.module.css';
 
 const Products = ( {title, style = {}, products = [], amount} ) =>{
 
-    const list = products.slice(20, amount + 20);
+    const list = products.slice(0, amount);
 
     return (
         <section className={styles.products} style={ style } >

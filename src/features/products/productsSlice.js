@@ -6,7 +6,7 @@ import {BASE_URL} from '../../utils/constants.js';
 
 const initialState = {
     productsLoadingStatus: 'idle',
-    // filtered : [],
+    filtered : [],
     // related : [],
     list : [],
 };
@@ -27,6 +27,11 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts',
 const productsSlice = createSlice({
     name: 'products',
     initialState,
+    reducers : {
+        filterByPrice: ( state, action) =>{
+            state.filtered = state.list.filter( (item) => item.price < action.payload )
+        }
+    },
     extraReducers: (builder) => {
         builder
         .addCase(fetchProducts.pending, state => { state.productsLoadingStatus = 'loading'; } )
@@ -39,6 +44,8 @@ const productsSlice = createSlice({
     }
 })
 
+
 const {actions, reducer} = productsSlice;
 
+export const {filterByPrice} = actions;
 export default reducer;
