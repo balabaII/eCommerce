@@ -1,0 +1,39 @@
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+
+import { fetchCategories } from "../../features/categories/categoriesSlice.js";
+import { fetchProducts } from '../../features/products/productsSlice.js';
+
+import AppRoutes from "../Routes/Routes";
+
+import Header from "../Header/Header";
+import Home from '../Home/Home';
+import Sidebar from "../Sidebar/Sidebar";
+import Footer from "../Footer/Footer";
+
+
+
+
+const App = () =>{
+    const dispatch = useDispatch();
+
+    useEffect( () => {
+        dispatch( fetchCategories() );
+        dispatch( fetchProducts() );
+    }, []);
+
+    
+    return (
+        <div className="app">
+            <Header/>
+            <div className="container">
+                <Sidebar/>
+                <Home/>
+            </div>
+            
+            <Footer/>
+        </div>
+    )
+}
+
+export default App;
