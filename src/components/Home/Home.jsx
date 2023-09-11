@@ -17,6 +17,7 @@ const Home = () =>{
         if( !list.length ) return ;
         dispatch(filterByPrice(100))
     }, [dispatch, list.length] );
+    
     return (
         <>
         <Poster/>

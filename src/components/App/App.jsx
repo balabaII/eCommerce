@@ -7,7 +7,6 @@ import { fetchProducts } from '../../features/products/productsSlice.js';
 import AppRoutes from "../Routes/Routes";
 
 import Header from "../Header/Header";
-import Home from '../Home/Home';
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
 
@@ -28,7 +27,7 @@ const App = () =>{
             <Header/>
             <div className="container">
                 <Sidebar/>
-                <Home/>
+                <AppRoutes/>
             </div>
             
             <Footer/>
