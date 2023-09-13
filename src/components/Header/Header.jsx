@@ -9,6 +9,7 @@ import styles from '../../styles/Header.module.css';
 import logo from '../../images/logo.svg';
 import sprites from '../../logos/sprite.svg';
 import avatar from '../../images/avatar.jpg';
+import { useGetProductsQuery } from '../../features/API/apiSlice.js';
 
 
 
@@ -16,17 +17,27 @@ const Header = () =>{
     const {currentUser, showForm} = useSelector( ( {user} ) => user ),
         dispatch = useDispatch(),
         navigate = useNavigate(),
-        [values, setValues] = useState({name: "Guest", avatar});
+        [values, setValues] = useState({name: "Guest", avatar}),
+        [searchValue, setSearchValue] = useState(""),
+        { data, isLoading } = useGetProductsQuery( {title: searchValue} );
+
+   
+    useEffect( () => {
+        if( currentUser) setValues( currentUser);
+    }, [currentUser] );
 
     const handleClick = () =>{
         if( !currentUser) dispatch( toggleForm(true) );
         else navigate(ROUTES.PROFILE)
     };
     
-    useEffect( () => {
-        if( currentUser) setValues( currentUser);
-    }, [currentUser] );
-    
+
+    const handleSearch = ( {target: {value} } ) =>{
+        setSearchValue( value );
+    };
+
+
+     
     return (
         <div className={styles.header}>
             <div className={styles.logo}>
@@ -55,11 +66,24 @@ const Header = () =>{
                         name='search' 
                         placeholder='Search' 
                         autoComplete='off'
-                        value=""
-                        onChange={() => {}}
+                        value={searchValue}
+                        onChange={handleSearch}
                         />
                     </div>  
-                    {false && <div className={styles.box}></div> }
+                    {searchValue && <div className={styles.box}>
+                        {isLoading ? 'Loading' : !data.length ? "No matches" : (
+                            data.map( ({title, images, id}) => (
+                                <Link to={`/products/${id}`} 
+                                        onClick={() => 
+                                        setSearchValue('')} key={id} 
+                                        className={styles.item}>
+                                            
+                                    <div className={styles.image} style={ {backgroundImage : `url(${images[0]})`}} />
+                                    <div className={styles.title}>{title}</div>
+                                </Link>
+                            ))
+                        )}
+                    </div> }
                     
                 </form>
 
