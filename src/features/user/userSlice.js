@@ -6,21 +6,55 @@ import {BASE_URL} from '../../utils/constants.js';
 
 const initialState = {
     userLoadingStatus: 'idle',
-    currentUser : [],
+    currentUser : null,
     cart: [],
+    formType : "signup",
+    showForm: false,
 };
 
-// export const fetchCategories = createAsyncThunk('categories/fetchCategories', 
-//     async (_, thunkAPI) => {
-//         try{
-//             const res = await axios(`${BASE_URL}/categories`);
-//             return res.data;
-//         }catch(error){
-//             console.log( error );
-//             return thunkAPI.rejectWithValue(error);
-//         }
-//     }
-// );
+export const createUser = createAsyncThunk(
+    'users/createUser', 
+    async (payload, thunkAPI) => {
+        try{
+            const res = await axios.post(`${BASE_URL}/users`, payload);
+            return res.data;
+        }catch(error){
+            console.log( error );
+            return thunkAPI.rejectWithValue(error);
+        }
+    }
+);
+
+export const updateUser = createAsyncThunk(
+    'users/updateUser', 
+    async (payload, thunkAPI) => {
+        try{
+            const res = await axios.put(`${BASE_URL}/users/${payload.id}`, payload);
+            return res.data;
+        }catch(error){
+            console.log( error );
+            return thunkAPI.rejectWithValue(error);
+        }
+    }
+);
+
+export const loginUser = createAsyncThunk(
+    'users/loginUser', 
+    async (payload, thunkAPI) => {
+        try{
+            const res = await axios.post(`${BASE_URL}/auth/login`, payload),
+                login = await axios(`${BASE_URL}/auth/profile`,{ 
+                    headers : {
+                        "Authorization" : `Bearer ${res.data.access_token}`
+                    }});
+
+            return login.data;
+        }catch(error){
+            console.log( error );
+            return thunkAPI.rejectWithValue(error);
+        }
+    }
+);
 
 
 const userSlice = createSlice({
@@ -42,21 +76,26 @@ const userSlice = createSlice({
             }
 
             state.cart = newCart;
-        }
+        },
+
+        toggleForm: ( state, action) => { state.showForm = action.payload; },
+        toggleFormType : (state, action) => { state.formType = action.payload },
     },
     extraReducers: (builder) => {
-        // builder
-        // .addCase(fetchCategories.pending, state => { state.categoriesLoadingStatus = 'loading'; } )
-        // .addCase(fetchCategories.fulfilled, (state, action) => {
-        //     state.categoriesLoadingStatus = 'idle';
-        //     state.list = action.payload;
-        // })
-        // .addCase(fetchCategories.rejected, state => { state.categoriesLoadingStatus = 'error'; } )
-        // .addDefaultCase( () => {} )
+        builder
+        .addCase(createUser.fulfilled, (state, action) => {
+            state.currentUser = action.payload;
+        })
+        .addCase(updateUser.fulfilled, (state, action) => {
+            state.currentUser = action.payload;
+        })
+        .addCase(loginUser.fulfilled, (state, action) => {
+            state.currentUser = action.payload;
+        })
     }
 })
 
 const {actions, reducer} = userSlice;
 
-export const { addItemToCart } = actions;
+export const { addItemToCart, toggleForm, toggleFormType} = actions;
 export default reducer;
