@@ -74,9 +74,14 @@ const Category = () => {
         setItems([]);
         setLimit( false );
         setParams( {...defaultParams, ...values} );
-    }
+    };
 
-    
+    const handleReset = () =>{
+        setValues(defaultValues);
+        setParams(defaultParams);
+        setLimit(false);
+    }
+     
     return (
         <section className={styles.wrapper}>
             <h2 className={styles.title}>{category?.name}</h2>
@@ -114,7 +119,7 @@ const Category = () => {
             {isLoading ? <div className="preloader">Loading...</div>
                         :  !isSuccess || !items.length ? (<div className={styles.back}>
                                                             <span>No Results</span>
-                                                            <button>Reset</button>
+                                                            <button onClick={handleReset} >Reset</button>
                                                         </div>) 
                                                       : <Products title="" 
                                                                   products={items} 

@@ -9,3 +9,5 @@ export const buildUrl = (url, params) => {
     
     return result;
 }
+
+export const sumUp = (arr) => arr.reduce( (acc, item) => acc + item ,0)
