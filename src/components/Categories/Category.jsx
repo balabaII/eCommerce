@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector} from "react-redux";
 import { useParams } from "react-router";
+
 
 import { useGetProductsQuery } from "../../features/API/apiSlice";
 
