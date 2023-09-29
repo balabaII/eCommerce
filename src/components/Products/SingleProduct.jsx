@@ -5,10 +5,13 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 
 import {ROUTES} from '../../utils/routes.js'
-import { getRelatedProducts } from "../../features/products/productsSlice";
+import { getRelatedProducts, error } from "../../features/products/productsSlice";
 
 import Product from "./Product";
 import Products from "./Products";
+
+import Spinner from "../Spinner/Spinner";
+import ErrorMessage from "../ErrorBoundary/ErrorMessage/ErrorMessage";
 
 
 
@@ -18,27 +21,41 @@ const SingleProduct = () =>{
         dispatch = useDispatch();
 
     const { data, isLoading, isFetching, isSuccess} = useGetProductQuery({id}),
-        {list, related} = useSelector( ({products}) => products);
+        {list, related, productsLoadingStatus} = useSelector( ({products}) => products);
+
+
 
     useEffect( () => {
-        if( !isFetching && !isLoading && !isSuccess){
-            navigate(ROUTES.HOME)
+        if( !data || !list.length ) {
+            dispatch( error() )
+            return 
         };
-    }, [isLoading, isFetching, isSuccess] );
-
-    useEffect( () => {
-        if( !data || !list.length ) return;
         dispatch( getRelatedProducts(data.category.id) )
     }, [data, dispatch, list.length] );
 
+    const visibleContent = () =>{
+        if( productsLoadingStatus === 'loading'){
+            return <Spinner/>
+        }else if( productsLoadingStatus === 'error'){
+            return <ErrorMessage/>
+        }else if( productsLoadingStatus === 'idle'){
+            return (
+                <>  
+                <Product {...data}/>
+                <Products products={related} amount={5} title="Related products"/>
+               </>
+            )
+        }
+    } 
     return (
-        !data ? <section className="preloader">Loading...</section>
-        :(
-            <>  
-            <Product {...data}/>
-            <Products products={related} amount={5} title="Related products"/>
-            </>
-        ) 
+        <>
+        {visibleContent()}
+        </>
+        
+        // !data ? <section className="preloader">Loading...</section>
+        // :(
+        //     
+        // ) 
     )
 }
 

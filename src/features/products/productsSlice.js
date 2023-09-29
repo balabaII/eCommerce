@@ -35,7 +35,8 @@ const productsSlice = createSlice({
         getRelatedProducts: ( state, action) => {
             const list = state.list.filter( ({category : {id}}) => id === action.payload)
             state.related = shuffle(list);
-        }
+        },
+        error: ( state ) => { state.productsLoadingStatus = 'error'}
     },
     extraReducers: (builder) => {
         builder
@@ -52,5 +53,5 @@ const productsSlice = createSlice({
 
 const {actions, reducer} = productsSlice;
 
-export const {filterByPrice, getRelatedProducts} = actions;
+export const {filterByPrice, getRelatedProducts, error} = actions;
 export default reducer;

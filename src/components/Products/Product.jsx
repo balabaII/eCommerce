@@ -14,10 +14,11 @@ const colors = ['Green', 'Yellow', 'Red', 'Orange', 'Black'],
 
 
 const Product = (item) =>{
-    const {title, price, description, images} = item;
+    let {title, price, description, images} = item;
     const [currentImage, setCurrentImage] = useState(),
         [currentSize, setCurrentSize] = useState();
     
+    if( !images ) images = [];
     const dispatch = useDispatch();
 
     const addToCart = () => {
